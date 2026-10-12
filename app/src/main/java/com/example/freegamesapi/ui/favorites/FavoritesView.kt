@@ -6,80 +6,23 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.freegamesapi.Model.Usuario
-
-val FavGamepadVector: ImageVector
-    get() = ImageVector.Builder(
-        name = "FavGamepad",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f
-    ).addPath(
-        pathData = addPathNodes("M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-14 8H5v-2h2v2zm0-3H5V9h2v2zm3 3H8v-2h2v2zm0-3H8V9h2v2zm6 4h-2v-2h2v2zm3-3h-2v-2h2v2z"),
-        fill = SolidColor(Color.White)
-    ).build()
-
-val FavChevronRightVector: ImageVector
-    get() = ImageVector.Builder(
-        name = "FavChevronRight",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f
-    ).addPath(
-        pathData = addPathNodes("M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"),
-        fill = SolidColor(Color(0xFF9CA3AF))
-    ).build()
-
-val FavHeartFilledVector: ImageVector
-    get() = ImageVector.Builder(
-        name = "FavHeartFilled",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f
-    ).addPath(
-        pathData = addPathNodes("M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"),
-        fill = SolidColor(Color(0xFFC4B5FD))
-    ).build()
-
-val FavHeartOutlineVector: ImageVector
-    get() = ImageVector.Builder(
-        name = "FavHeartOutline",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f
-    ).addPath(
-        pathData = addPathNodes("M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5 18.5 5 20 6.5 20 8.5c0 2.89-3.14 5.74-7.9 10.05z"),
-        fill = SolidColor(Color(0xFFC4B5FD))
-    ).build()
-
-val FavGridViewVector: ImageVector
-    get() = ImageVector.Builder(
-        name = "FavGridView",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f
-    ).addPath(
-        pathData = addPathNodes("M4 11h6V4H4v7zm0 9h6v-7H4v7zm10 0h6v-7h-6v7zm0-16v7h6V4h-6z"),
-        fill = SolidColor(Color(0xFF0F0F13))
-    ).build()
 
 @Composable
 fun FavoritesView(
@@ -120,7 +63,7 @@ fun FavoritesView(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = FavGamepadVector,
+                            imageVector = Icons.Default.SportsEsports,
                             contentDescription = "Logo",
                             tint = Color(0xFF0F0F13),
                             modifier = Modifier.size(24.dp)
@@ -239,7 +182,7 @@ fun FavoritesView(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = FavHeartOutlineVector,
+                                imageVector = Icons.Default.FavoriteBorder,
                                 contentDescription = "Heart",
                                 tint = primaryPurple,
                                 modifier = Modifier.size(28.dp)
@@ -280,7 +223,7 @@ fun FavoritesView(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    imageVector = FavGridViewVector,
+                                    imageVector = Icons.Default.GridView,
                                     contentDescription = "Explorar",
                                     tint = Color(0xFF0F0F13),
                                     modifier = Modifier.size(18.dp)
@@ -336,7 +279,7 @@ private fun FavoriteGameCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = FavHeartFilledVector,
+                        imageVector = Icons.Default.Favorite,
                         contentDescription = "Favorito",
                         tint = Color(0xFFC4B5FD),
                         modifier = Modifier.size(20.dp)
@@ -353,7 +296,7 @@ private fun FavoriteGameCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = FavGamepadVector,
+                        imageVector = Icons.Default.SportsEsports,
                         contentDescription = "Gamepad",
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
@@ -405,7 +348,7 @@ private fun FavoriteGameCard(
                         color = Color.White
                     )
                     Icon(
-                        imageVector = FavChevronRightVector,
+                        imageVector = Icons.Default.ChevronRight,
                         contentDescription = "Ver detalles",
                         tint = Color(0xFF9CA3AF),
                         modifier = Modifier.size(20.dp)

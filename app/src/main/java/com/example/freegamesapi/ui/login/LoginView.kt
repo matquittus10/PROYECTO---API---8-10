@@ -3,72 +3,20 @@ package com.example.freegamesapi.ui.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-val GamepadVector: ImageVector
-    get() = ImageVector.Builder(
-        name = "Gamepad",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f
-    ).path(
-        fill = SolidColor(Color(0xFF0F0F13))
-    ) {
-        moveTo(21f, 6f)
-        horizontalLineTo(3f)
-        curveTo(1.9f, 6f, 1f, 6.9f, 1f, 8f)
-        verticalLineTo(16f)
-        curveTo(1f, 17.1f, 1.9f, 18f, 3f, 18f)
-        horizontalLineTo(21f)
-        curveTo(22.1f, 18f, 23f, 17.1f, 23f, 16f)
-        verticalLineTo(8f)
-        curveTo(23f, 6.9f, 22.1f, 6f, 21f, 6f)
-        moveTo(7f, 14f)
-        horizontalLineTo(5f)
-        verticalLineTo(12f)
-        horizontalLineTo(7f)
-        verticalLineTo(14f)
-        moveTo(7f, 11f)
-        horizontalLineTo(5f)
-        verticalLineTo(9f)
-        horizontalLineTo(7f)
-        verticalLineTo(11f)
-        moveTo(10f, 14f)
-        horizontalLineTo(8f)
-        verticalLineTo(12f)
-        horizontalLineTo(10f)
-        verticalLineTo(14f)
-        moveTo(10f, 11f)
-        horizontalLineTo(8f)
-        verticalLineTo(9f)
-        horizontalLineTo(10f)
-        verticalLineTo(11f)
-        moveTo(16f, 15f)
-        horizontalLineTo(14f)
-        verticalLineTo(13f)
-        horizontalLineTo(16f)
-        verticalLineTo(15f)
-        moveTo(19f, 12f)
-        horizontalLineTo(17f)
-        verticalLineTo(10f)
-        horizontalLineTo(19f)
-        verticalLineTo(12f)
-    }.build()
 
 @Composable
 fun LoginView(
@@ -112,9 +60,10 @@ fun LoginView(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = GamepadVector,
+                    imageVector = Icons.Default.SportsEsports,
                     contentDescription = "Game Icon",
-                    modifier = Modifier.size(28.dp)
+                    tint = Color(0xFF0F0F13),
+                    modifier = Modifier.size(32.dp)
                 )
             }
 
