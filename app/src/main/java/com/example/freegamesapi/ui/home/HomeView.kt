@@ -3,13 +3,14 @@ package com.example.freegamesapi.ui.home
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +22,8 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.freegamesapi.Model.Usuario
+import com.example.freegamesapi.ui.profile.ProfileView
 
 val HomeGamepadVector: ImageVector
     get() = ImageVector.Builder(
@@ -169,6 +172,9 @@ data class GameItem(
 
 @Composable
 fun HomeView() {
+    var selectedTab by remember { mutableStateOf(0) } // 0: Inicio, 1: Mis Favoritos, 2: Perfil
+    val usuario = remember { Usuario(1048, "Alex Lara", "alex.lara@email.com") }
+
     val backgroundColor = Color(0xFF0F0F13)
     val cardColor = Color(0xFF181820)
     val primaryPurple = Color(0xFFC4B5FD)
@@ -221,233 +227,244 @@ fun HomeView() {
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 90.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Top Action Bar
-                item {
-                    Row(
+        when (selectedTab) {
+            0 -> {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 90.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Left Game Icon Badge
-                        Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(primaryPurple),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = HomeGamepadVector,
-                                contentDescription = "Game Icon",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-
-                        // Right Avatar Circle
-                        Box(
-                            modifier = Modifier
-                                .size(42.dp)
-                                .clip(CircleShape)
-                                .background(primaryPurple),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "AL",
-                                color = Color(0xFF0F0F13),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-
-                // Header Section
-                item {
-                    Column(modifier = Modifier.padding(vertical = 4.dp)) {
-                        Text(
-                            text = "Juegos gratuitos",
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Encuentra juegos free-to-play para PC.",
-                            fontSize = 15.sp,
-                            color = mutedTextColor
-                        )
-                    }
-                }
-
-                // Filter Controls
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        // Search Field
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp)
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(fieldBackground)
-                                .border(1.dp, borderDark, RoundedCornerShape(14.dp))
-                                .padding(horizontal = 16.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = SearchVector,
-                                    contentDescription = "Buscar",
-                                    tint = mutedTextColor,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    text = "Buscar por nombre...",
-                                    color = mutedTextColor,
-                                    fontSize = 15.sp
-                                )
-                            }
-                        }
-
-                        // Genre Dropdown Field
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(fieldBackground)
-                                .border(1.dp, borderDark, RoundedCornerShape(14.dp))
-                                .padding(horizontal = 16.dp, vertical = 12.dp)
-                        ) {
+                        // Top Action Bar
+                        item {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Column {
-                                    Text(
-                                        text = "GÉNERO",
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = mutedTextColor,
-                                        letterSpacing = 0.5.sp
-                                    )
-                                    Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = "Todos los géneros",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = textColor
+                                // Left Game Icon Badge
+                                Box(
+                                    modifier = Modifier
+                                        .size(44.dp)
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(primaryPurple),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = HomeGamepadVector,
+                                        contentDescription = "Game Icon",
+                                        modifier = Modifier.size(24.dp)
                                     )
                                 }
-                                Icon(
-                                    imageVector = ArrowDownVector,
-                                    contentDescription = "Desplegar género",
-                                    tint = mutedTextColor,
-                                    modifier = Modifier.size(20.dp)
-                                )
+
+                                // Right Avatar Circle -> Switches to Profile tab
+                                Box(
+                                    modifier = Modifier
+                                        .size(42.dp)
+                                        .clip(CircleShape)
+                                        .background(primaryPurple)
+                                        .clickable { selectedTab = 2 },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "AL",
+                                        color = Color(0xFF0F0F13),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
 
-                        // Platform Dropdown Field
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(fieldBackground)
-                                .border(1.dp, borderDark, RoundedCornerShape(14.dp))
-                                .padding(horizontal = 16.dp, vertical = 12.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column {
-                                    Text(
-                                        text = "PLATAFORMA",
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = mutedTextColor,
-                                        letterSpacing = 0.5.sp
-                                    )
-                                    Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = "PC (Windows)",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = textColor
-                                    )
-                                }
-                                Icon(
-                                    imageVector = ArrowDownVector,
-                                    contentDescription = "Desplegar plataforma",
-                                    tint = mutedTextColor,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                // Section Title: Explora juegos
-                item {
-                    Column(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)) {
-                        Text(
-                            text = "Explora juegos",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Mostrando 6 juegos para PC",
-                            fontSize = 13.sp,
-                            color = mutedTextColor
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Sort pill dropdown
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(Color(0xFF1E1E2A))
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Header Section
+                        item {
+                            Column(modifier = Modifier.padding(vertical = 4.dp)) {
                                 Text(
-                                    text = "Más populares",
-                                    color = textColor,
+                                    text = "Juegos gratuitos",
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textColor
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Encuentra juegos free-to-play para PC.",
+                                    fontSize = 15.sp,
+                                    color = mutedTextColor
+                                )
+                            }
+                        }
+
+                        // Filter Controls
+                        item {
+                            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                // Search Field
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(52.dp)
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(fieldBackground)
+                                        .border(1.dp, borderDark, RoundedCornerShape(14.dp))
+                                        .padding(horizontal = 16.dp),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = SearchVector,
+                                            contentDescription = "Buscar",
+                                            tint = mutedTextColor,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(
+                                            text = "Buscar por nombre...",
+                                            color = mutedTextColor,
+                                            fontSize = 15.sp
+                                        )
+                                    }
+                                }
+
+                                // Genre Dropdown Field
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(fieldBackground)
+                                        .border(1.dp, borderDark, RoundedCornerShape(14.dp))
+                                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column {
+                                            Text(
+                                                text = "GÉNERO",
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = mutedTextColor,
+                                                letterSpacing = 0.5.sp
+                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Text(
+                                                text = "Todos los géneros",
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = textColor
+                                            )
+                                        }
+                                        Icon(
+                                            imageVector = ArrowDownVector,
+                                            contentDescription = "Desplegar género",
+                                            tint = mutedTextColor,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+
+                                // Platform Dropdown Field
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(fieldBackground)
+                                        .border(1.dp, borderDark, RoundedCornerShape(14.dp))
+                                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column {
+                                            Text(
+                                                text = "PLATAFORMA",
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = mutedTextColor,
+                                                letterSpacing = 0.5.sp
+                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Text(
+                                                text = "PC (Windows)",
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = textColor
+                                            )
+                                        }
+                                        Icon(
+                                            imageVector = ArrowDownVector,
+                                            contentDescription = "Desplegar plataforma",
+                                            tint = mutedTextColor,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        // Section Title: Explora juegos
+                        item {
+                            Column(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)) {
+                                Text(
+                                    text = "Explora juegos",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textColor
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "Mostrando 6 juegos para PC",
                                     fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
+                                    color = mutedTextColor
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Icon(
-                                    imageVector = ArrowDownVector,
-                                    contentDescription = "Ordenar",
-                                    tint = textColor,
-                                    modifier = Modifier.size(18.dp)
-                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // Sort pill dropdown
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(20.dp))
+                                        .background(Color(0xFF1E1E2A))
+                                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "Más populares",
+                                            color = textColor,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Icon(
+                                            imageVector = ArrowDownVector,
+                                            contentDescription = "Ordenar",
+                                            tint = textColor,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                }
                             }
+                        }
+
+                        // Game Items List
+                        items(sampleGames) { game ->
+                            GameCard(game = game, cardColor = cardColor)
                         }
                     }
                 }
-
-                // Game Items List
-                items(sampleGames) { game ->
-                    GameCard(game = game, cardColor = cardColor)
-                }
+            }
+            1 -> {
+                FavoritesView(usuario = usuario)
+            }
+            2 -> {
+                ProfileView(usuario = usuario)
             }
         }
 
@@ -464,11 +481,13 @@ fun HomeView() {
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Tab 1: Inicio (Selected)
+                // Tab 1: Inicio
+                val isHomeSelected = selectedTab == 0
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(24.dp))
-                        .background(Color(0xFF3B3355))
+                        .background(if (isHomeSelected) Color(0xFF3B3355) else Color.Transparent)
+                        .clickable { selectedTab = 0 }
                         .padding(horizontal = 20.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -476,56 +495,70 @@ fun HomeView() {
                         Icon(
                             imageVector = GridViewVector,
                             contentDescription = "Inicio",
-                            tint = primaryPurple,
+                            tint = if (isHomeSelected) primaryPurple else mutedTextColor,
                             modifier = Modifier.size(22.dp)
                         )
                         Text(
                             text = "Inicio",
-                            color = textColor,
+                            color = if (isHomeSelected) textColor else mutedTextColor,
                             fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = if (isHomeSelected) FontWeight.Bold else FontWeight.Medium
                         )
                     }
                 }
 
                 // Tab 2: Mis Favoritos
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                val isFavSelected = selectedTab == 1
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(if (isFavSelected) Color(0xFF3B3355) else Color.Transparent)
+                        .clickable { selectedTab = 1 }
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = FavoriteOutlineVector,
-                        contentDescription = "Mis Favoritos",
-                        tint = mutedTextColor,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "Mis Favoritos",
-                        color = mutedTextColor,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = if (isFavSelected) FavoriteFilledVector else FavoriteOutlineVector,
+                            contentDescription = "Mis Favoritos",
+                            tint = if (isFavSelected) primaryPurple else mutedTextColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Mis Favoritos",
+                            color = if (isFavSelected) textColor else mutedTextColor,
+                            fontSize = 11.sp,
+                            fontWeight = if (isFavSelected) FontWeight.Bold else FontWeight.Medium
+                        )
+                    }
                 }
 
                 // Tab 3: Perfil
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                val isProfileSelected = selectedTab == 2
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(if (isProfileSelected) Color(0xFF3B3355) else Color.Transparent)
+                        .clickable { selectedTab = 2 }
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = PersonVector,
-                        contentDescription = "Perfil",
-                        tint = mutedTextColor,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "Perfil",
-                        color = mutedTextColor,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = PersonVector,
+                            contentDescription = "Perfil",
+                            tint = if (isProfileSelected) primaryPurple else mutedTextColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Perfil",
+                            color = if (isProfileSelected) textColor else mutedTextColor,
+                            fontSize = 11.sp,
+                            fontWeight = if (isProfileSelected) FontWeight.Bold else FontWeight.Medium
+                        )
+                    }
                 }
             }
         }
@@ -598,30 +631,20 @@ fun GameCard(
                     color = Color(0xFFA7F3D0)
                 ) {
                     Text(
-                        text = "FREE TO PLAY",
-                        color = Color(0xFF065F46),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        text = game.platform,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = Color(0xFF0F0F13),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-
-                // Bottom Right Publisher Tag
-                Text(
-                    text = game.publisherTag,
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .align(Alignment.BottomEnd)
-                )
             }
 
-            // Card Body Info Area
+            // Card Content Area
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -634,55 +657,57 @@ fun GameCard(
                         fontWeight = FontWeight.Bold,
                         color = textColor
                     )
-                    Icon(
-                        imageVector = ChevronRightVector,
-                        contentDescription = "Ver detalles",
-                        tint = mutedTextColor,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFF22222D)
+                    ) {
+                        Text(
+                            text = game.genre,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            color = primaryPurple,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = game.description,
                     fontSize = 13.sp,
                     color = mutedTextColor,
-                    lineHeight = 18.sp
+                    maxLines = 2
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Tag Chips
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Genre Tag
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = Color(0xFF22222E),
-                        border = BorderStroke(1.dp, Color(0xFF2D2D3A))
-                    ) {
-                        Text(
-                            text = game.genre,
-                            color = textColor,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                        )
-                    }
+                    Text(
+                        text = "FREE-TO-PLAY",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = primaryPurple
+                    )
 
-                    // Platform Tag
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = Color(0xFF3B3355)
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF22222D),
+                            contentColor = textColor
+                        ),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier.height(36.dp)
                     ) {
                         Text(
-                            text = game.platform,
-                            color = primaryPurple,
+                            text = "Ver detalles",
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
