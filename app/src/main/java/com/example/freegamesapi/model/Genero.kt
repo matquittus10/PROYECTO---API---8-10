@@ -1,4 +1,4 @@
-package com.example.freegamesapi.Model
+package com.example.freegamesapi.model
 
 class Genero(
     var id: Int,

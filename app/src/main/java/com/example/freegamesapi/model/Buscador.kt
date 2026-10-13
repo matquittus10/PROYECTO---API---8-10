@@ -1,4 +1,4 @@
-package com.example.freegamesapi.Model
+package com.example.freegamesapi.model
 
 class Buscador {
     fun buscarPorNombre(nombre: String): List<Juego> {
