@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.freegamesapi.Model.Usuario
+import com.example.freegamesapi.model.Usuario
 import java.util.Locale
 
 @Composable
