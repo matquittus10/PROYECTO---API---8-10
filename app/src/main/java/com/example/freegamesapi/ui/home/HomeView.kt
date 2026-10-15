@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.freegamesapi.model.Juego
+import com.example.freegamesapi.model.Pokemon
 import com.example.freegamesapi.model.Usuario
 import com.example.freegamesapi.ui.favorites.FavoritesView
 import com.example.freegamesapi.ui.profile.ProfileView
@@ -336,6 +337,7 @@ fun HomeView(
                                     is HomeUiState.Success -> "Mostrando ${state.juegos.size} juegos para PC"
                                     is HomeUiState.Loading -> "Cargando juegos..."
                                     is HomeUiState.Error -> "Error al conectar con la API"
+                                    is HomeUiState.Success2 -> "Mostrando ${state.pokemon.size} pokemones"
                                 }
 
                                 Text(
@@ -392,6 +394,12 @@ fun HomeView(
                                     GameCard(juego = juego, cardColor = cardColor)
                                 }
                             }
+                            is HomeUiState.Success2 -> {
+                                items(state.pokemon) { pokemon ->
+                                    PokemonCard(pokemon = pokemon, cardColor = cardColor)
+                                }
+                            }
+
                             is HomeUiState.Error -> {
                                 item {
                                     Surface(
@@ -411,7 +419,7 @@ fun HomeView(
                                             )
                                             Spacer(modifier = Modifier.height(12.dp))
                                             Button(
-                                                onClick = { viewModel.cargarJuegos() },
+                                                onClick = { viewModel.cargarPokemons() },
                                                 colors = ButtonDefaults.buttonColors(containerColor = primaryPurple)
                                             ) {
                                                 Icon(
@@ -619,6 +627,99 @@ fun GameCard(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun PokemonCard(
+    pokemon: Pokemon,
+    cardColor: Color
+) {
+    val textColor = Color.White
+    val mutedTextColor = Color(0xFF9CA3AF)
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+    ) {
+        Column {
+            // Banner Header Area
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .background(Color(0xFF3B3355))
+            ) {
+                // Center Game Icon Fallback
+                Box(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(Color(0x33000000))
+                        .align(Alignment.Center),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SportsEsports,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.9f),
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+
+                // Bottom Left Green Badge
+                Surface(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .align(Alignment.BottomStart),
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color(0xFFA7F3D0)
+                ) {
+                    Text(
+                        text = "POKEMON",
+                        color = Color(0xFF065F46),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
+
+            // Card Body Info Area
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = pokemon.name.replaceFirstChar { it.uppercase() },
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    )
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = "Ver detalles",
+                        tint = mutedTextColor,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = pokemon.url,
+                    fontSize = 13.sp,
+                    color = mutedTextColor,
+                    lineHeight = 18.sp,
+                    maxLines = 3
+                )
             }
         }
     }
