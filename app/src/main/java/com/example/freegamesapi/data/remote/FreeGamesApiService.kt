@@ -4,25 +4,22 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
- * Define los endpoints de la API. Retrofit genera la implementacion en tiempo de ejecucion.
- * Al ser funciones `suspend`, se ejecutan fuera del hilo principal dentro de una corrutina.
- *
- * Documentacion de la API:
- * https://www.gamerpower.com/api-read
+ * Define los endpoints de la API de FreeToGame.
+ * Documentación de la API: https://www.freetogame.com/api-doc
  */
 interface FreeGamesApiService {
 
-    /** Obtiene la lista de juegos gratuitos (giveaways). */
-    @GET("giveaways")
-    suspend fun obtenerGiveaways(
+    /** Obtiene la lista de juegos gratuitos. */
+    @GET("games")
+    suspend fun obtenerJuegos(
         @Query("platform") plataforma: String? = null,
-        @Query("type") tipo: String? = null,
-        @Query("sort-by") ordenarPor: String? = null
-    ): List<GiveawayDto>
+        @Query("category") categoria: String? = null,
+        @Query("sort-by") ordenarPor: String? = null,
+    ): List<GameDto>
 
     /** Obtiene el detalle de un juego gratuito por su id. */
-    @GET("giveaway")
-    suspend fun obtenerGiveawayPorId(
-        @Query("id") id: Int
-    ): GiveawayDto
+    @GET("game")
+    suspend fun obtenerJuegoPorId(
+        @Query("id") id: Int,
+    ): GameDto
 }
