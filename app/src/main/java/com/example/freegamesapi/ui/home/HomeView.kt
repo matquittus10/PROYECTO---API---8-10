@@ -25,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.freegamesapi.model.Juego
 import com.example.freegamesapi.model.Usuario
 import com.example.freegamesapi.ui.favorites.FavoritesView
@@ -467,21 +469,32 @@ fun GameCard(
                     .height(160.dp)
                     .background(bannerColor)
             ) {
-                // Center Game Icon
-                Box(
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(Color(0x33000000))
-                        .align(Alignment.Center),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.SportsEsports,
-                        contentDescription = null,
-                        tint = Color.White.copy(alpha = 0.9f),
-                        modifier = Modifier.size(36.dp)
+                if (juego.imagen.isNotBlank()) {
+                    AsyncImage(
+                        model = juego.imagen,
+                        contentDescription = juego.nombre,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     )
+                } else {
+                    // Center Game Icon Fallback
+                    Box(
+                        modifier = Modifier
+                            .size(70.dp)
+                            .clip(RoundedCornerShape(22.dp))
+                            .background(Color(0x33000000))
+                            .align(Alignment.Center),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.SportsEsports,
+                            contentDescription = null,
+                            tint = Color.White.copy(alpha = 0.9f),
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
                 }
 
                 // Top Right Favorite Button
@@ -490,7 +503,7 @@ fun GameCard(
                         .padding(12.dp)
                         .size(38.dp)
                         .clip(CircleShape)
-                        .background(Color(0x66000000))
+                        .background(Color(0x99000000))
                         .align(Alignment.TopEnd),
                     contentAlignment = Alignment.Center
                 ) {
@@ -520,16 +533,22 @@ fun GameCard(
                 }
 
                 // Bottom Right Publisher Tag
-                Text(
-                    text = juego.desarrollador.uppercase(),
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
+                Surface(
                     modifier = Modifier
                         .padding(12.dp)
-                        .align(Alignment.BottomEnd)
-                )
+                        .align(Alignment.BottomEnd),
+                    shape = RoundedCornerShape(6.dp),
+                    color = Color(0x99000000)
+                ) {
+                    Text(
+                        text = juego.desarrollador.uppercase(),
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                    )
+                }
             }
 
             // Card Body Info Area

@@ -27,6 +27,7 @@ object Mapeadores {
             urlDescarga = dto.gameUrl ?: "",
             fechaLanzamiento = fecha,
             desarrollador = dto.developer ?: dto.publisher ?: "Desconocido",
+            imagen = dto.thumbnail ?: "",
         )
     }
 
