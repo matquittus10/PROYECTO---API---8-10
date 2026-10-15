@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
 
     // Debe terminar en "/" para que Retrofit pueda concatenar las rutas relativas.
-    private const val BASE_URL = "https://www.freetogame.com/api/games?platform=pc"
+    private const val BASE_URL = "https://www.freetogame.com/api/"
 
     private val clienteHttp: OkHttpClient = OkHttpClient.Builder()
         // Muestra cada peticion en Logcat (filtrar por "OkHttp"): util para depurar y para clase.
