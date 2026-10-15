@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.*
@@ -27,24 +28,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.freegamesapi.model.Juego
 import com.example.freegamesapi.model.Usuario
 import com.example.freegamesapi.ui.favorites.FavoritesView
 import com.example.freegamesapi.ui.profile.ProfileView
 
-data class GameItem(
-    val title: String,
-    val description: String,
-    val genre: String,
-    val platform: String,
-    val publisherTag: String,
-    val bannerColor: Color,
-    val isFavorite: Boolean
-)
-
 @Composable
-fun HomeView() {
+fun HomeView(
+    viewModel: HomeViewModel = viewModel()
+) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val usuario = remember { Usuario(1048, "Alex Lara", "alex.lara@email.com") }
+    val uiState by viewModel.uiState.collectAsState()
 
     val backgroundColor = Color(0xFF0F0F13)
     val cardColor = Color(0xFF181820)
@@ -53,45 +49,6 @@ fun HomeView() {
     val mutedTextColor = Color(0xFF9CA3AF)
     val fieldBackground = Color(0xFF161620)
     val borderDark = Color(0xFF2A2A38)
-
-    val sampleGames = listOf(
-        GameItem(
-            title = "Overwatch 2",
-            description = "A hero-focused first-person team shooter from Blizzard Entertainment.",
-            genre = "Shooter",
-            platform = "PC (Windows)",
-            publisherTag = "OVERWATCH",
-            bannerColor = Color(0xFF3B4354),
-            isFavorite = true
-        ),
-        GameItem(
-            title = "Lost Ark",
-            description = "Embark on an odyssey for the Lost Ark in a vast, vibrant action MMORPG.",
-            genre = "MMORPG",
-            platform = "PC (Windows)",
-            publisherTag = "LOSTARK",
-            bannerColor = Color(0xFF4D3B33),
-            isFavorite = false
-        ),
-        GameItem(
-            title = "PUBG: BATTLEGROUNDS",
-            description = "Land on strategic locations, loot weapons and supplies, and survive to become the last team standing.",
-            genre = "Shooter",
-            platform = "PC (Windows)",
-            publisherTag = "PUBG",
-            bannerColor = Color(0xFF2D393D),
-            isFavorite = false
-        ),
-        GameItem(
-            title = "Valorant",
-            description = "A 5v5 character-based tactical shooter set on the global stage.",
-            genre = "Shooter",
-            platform = "PC (Windows)",
-            publisherTag = "VALORANT",
-            bannerColor = Color(0xFF422C33),
-            isFavorite = true
-        )
-    )
 
     Scaffold(
         containerColor = backgroundColor,
@@ -372,8 +329,15 @@ fun HomeView() {
                                     color = textColor
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
+
+                                val cantidadTexto = when (val state = uiState) {
+                                    is HomeUiState.Success -> "Mostrando ${state.juegos.size} juegos para PC"
+                                    is HomeUiState.Loading -> "Cargando juegos..."
+                                    is HomeUiState.Error -> "Error al conectar con la API"
+                                }
+
                                 Text(
-                                    text = "Mostrando 6 juegos para PC",
+                                    text = cantidadTexto,
                                     fontSize = 13.sp,
                                     color = mutedTextColor
                                 )
@@ -405,9 +369,61 @@ fun HomeView() {
                             }
                         }
 
-                        // Game Items List
-                        items(sampleGames) { game ->
-                            GameCard(game = game, cardColor = cardColor)
+                        // Dynamic Content according to API State
+                        when (val state = uiState) {
+                            is HomeUiState.Loading -> {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(32.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(
+                                            color = primaryPurple
+                                        )
+                                    }
+                                }
+                            }
+                            is HomeUiState.Success -> {
+                                items(state.juegos) { juego ->
+                                    GameCard(juego = juego, cardColor = cardColor)
+                                }
+                            }
+                            is HomeUiState.Error -> {
+                                item {
+                                    Surface(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = RoundedCornerShape(16.dp),
+                                        color = cardColor,
+                                        border = BorderStroke(1.dp, borderDark)
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(24.dp),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text(
+                                                text = state.mensaje,
+                                                color = Color(0xFFFCA5A5),
+                                                fontSize = 14.sp
+                                            )
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            Button(
+                                                onClick = { viewModel.cargarJuegos() },
+                                                colors = ButtonDefaults.buttonColors(containerColor = primaryPurple)
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Refresh,
+                                                    contentDescription = "Reintentar",
+                                                    tint = Color(0xFF0F0F13)
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text("Reintentar", color = Color(0xFF0F0F13))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -424,12 +440,19 @@ fun HomeView() {
 
 @Composable
 fun GameCard(
-    game: GameItem,
+    juego: Juego,
     cardColor: Color
 ) {
     val primaryPurple = Color(0xFFC4B5FD)
     val textColor = Color.White
     val mutedTextColor = Color(0xFF9CA3AF)
+
+    val bannerColor = when (juego.id % 4) {
+        0 -> Color(0xFF3B4354)
+        1 -> Color(0xFF4D3B33)
+        2 -> Color(0xFF2D393D)
+        else -> Color(0xFF422C33)
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -442,7 +465,7 @@ fun GameCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
-                    .background(game.bannerColor)
+                    .background(bannerColor)
             ) {
                 // Center Game Icon
                 Box(
@@ -467,14 +490,14 @@ fun GameCard(
                         .padding(12.dp)
                         .size(38.dp)
                         .clip(CircleShape)
-                        .background(if (game.isFavorite) Color(0xFF4C426E) else Color(0x66000000))
+                        .background(Color(0x66000000))
                         .align(Alignment.TopEnd),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = if (game.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        imageVector = Icons.Default.FavoriteBorder,
                         contentDescription = "Favorito",
-                        tint = if (game.isFavorite) primaryPurple else Color.White,
+                        tint = Color.White,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -498,7 +521,7 @@ fun GameCard(
 
                 // Bottom Right Publisher Tag
                 Text(
-                    text = game.publisherTag,
+                    text = juego.desarrollador.uppercase(),
                     color = Color.White.copy(alpha = 0.7f),
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
@@ -519,7 +542,7 @@ fun GameCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = game.title,
+                        text = juego.nombre,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = textColor
@@ -535,10 +558,11 @@ fun GameCard(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = game.description,
+                    text = juego.descripcion,
                     fontSize = 13.sp,
                     color = mutedTextColor,
-                    lineHeight = 18.sp
+                    lineHeight = 18.sp,
+                    maxLines = 3
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -547,14 +571,14 @@ fun GameCard(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Genre Tag
+                    // Genre / Free Tag
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = Color(0xFF22222E),
                         border = BorderStroke(1.dp, Color(0xFF2D2D3A))
                     ) {
                         Text(
-                            text = game.genre,
+                            text = "Juego Gratuito",
                             color = textColor,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
@@ -568,7 +592,7 @@ fun GameCard(
                         color = Color(0xFF3B3355)
                     ) {
                         Text(
-                            text = game.platform,
+                            text = "PC (Windows)",
                             color = primaryPurple,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
