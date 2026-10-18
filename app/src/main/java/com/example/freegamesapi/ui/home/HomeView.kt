@@ -11,11 +11,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.CatchingPokemon
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SportsEsports
@@ -34,7 +37,10 @@ import coil.compose.AsyncImage
 import com.example.freegamesapi.model.Juego
 import com.example.freegamesapi.model.Usuario
 import com.example.freegamesapi.ui.favorites.FavoritesView
+import com.example.freegamesapi.ui.personajes.PersonajesView
+import com.example.freegamesapi.ui.poke.PokeView
 import com.example.freegamesapi.ui.profile.ProfileView
+import com.example.freegamesapi.ui.trivia.TriviaView
 
 @Composable
 fun HomeView(
@@ -60,22 +66,12 @@ fun HomeView(
                 contentColor = mutedTextColor,
                 tonalElevation = 0.dp
             ) {
-                // Tab 1: Inicio
+                // Tab 0: Inicio
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.GridView,
-                            contentDescription = "Inicio"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Inicio",
-                            fontWeight = if (selectedTab == 0) FontWeight.Bold else FontWeight.Medium
-                        )
-                    },
+                    icon = { Icon(Icons.Default.GridView, contentDescription = "Inicio") },
+                    label = { Text("Inicio", fontWeight = if (selectedTab == 0) FontWeight.Bold else FontWeight.Medium, fontSize = 11.sp) },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = primaryPurple,
                         selectedTextColor = textColor,
@@ -85,22 +81,12 @@ fun HomeView(
                     )
                 )
 
-                // Tab 2: Mis Favoritos
+                // Tab 1: Personajes
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
-                    icon = {
-                        Icon(
-                            imageVector = if (selectedTab == 1) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Mis Favoritos"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Mis Favoritos",
-                            fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Medium
-                        )
-                    },
+                    icon = { Icon(Icons.Default.Face, contentDescription = "Personajes") },
+                    label = { Text("Personajes", fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Medium, fontSize = 11.sp) },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = primaryPurple,
                         selectedTextColor = textColor,
@@ -110,22 +96,57 @@ fun HomeView(
                     )
                 )
 
-                // Tab 3: Perfil
+                // Tab 2: Pokédex
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Perfil"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Perfil",
-                            fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Medium
-                        )
-                    },
+                    icon = { Icon(Icons.Default.CatchingPokemon, contentDescription = "Pokédex") },
+                    label = { Text("Pokédex", fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Medium, fontSize = 11.sp) },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = primaryPurple,
+                        selectedTextColor = textColor,
+                        unselectedIconColor = mutedTextColor,
+                        unselectedTextColor = mutedTextColor,
+                        indicatorColor = Color(0xFF3B3355)
+                    )
+                )
+
+                // Tab 3: Trivia
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = { selectedTab = 3 },
+                    icon = { Icon(Icons.Default.Quiz, contentDescription = "Trivia") },
+                    label = { Text("Trivia", fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Medium, fontSize = 11.sp) },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = primaryPurple,
+                        selectedTextColor = textColor,
+                        unselectedIconColor = mutedTextColor,
+                        unselectedTextColor = mutedTextColor,
+                        indicatorColor = Color(0xFF3B3355)
+                    )
+                )
+
+                // Tab 4: Favoritos
+                NavigationBarItem(
+                    selected = selectedTab == 4,
+                    onClick = { selectedTab = 4 },
+                    icon = { Icon(if (selectedTab == 4) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favoritos") },
+                    label = { Text("Favoritos", fontWeight = if (selectedTab == 4) FontWeight.Bold else FontWeight.Medium, fontSize = 11.sp) },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = primaryPurple,
+                        selectedTextColor = textColor,
+                        unselectedIconColor = mutedTextColor,
+                        unselectedTextColor = mutedTextColor,
+                        indicatorColor = Color(0xFF3B3355)
+                    )
+                )
+
+                // Tab 5: Perfil
+                NavigationBarItem(
+                    selected = selectedTab == 5,
+                    onClick = { selectedTab = 5 },
+                    icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+                    label = { Text("Perfil", fontWeight = if (selectedTab == 5) FontWeight.Bold else FontWeight.Medium, fontSize = 11.sp) },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = primaryPurple,
                         selectedTextColor = textColor,
@@ -180,7 +201,7 @@ fun HomeView(
                                         .size(42.dp)
                                         .clip(CircleShape)
                                         .background(primaryPurple)
-                                        .clickable { selectedTab = 2 },
+                                        .clickable { selectedTab = 5 },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -430,9 +451,18 @@ fun HomeView(
                     }
                 }
                 1 -> {
-                    FavoritesView(usuario = usuario)
+                    PersonajesView()
                 }
                 2 -> {
+                    PokeView()
+                }
+                3 -> {
+                    TriviaView()
+                }
+                4 -> {
+                    FavoritesView(usuario = usuario)
+                }
+                5 -> {
                     ProfileView(usuario = usuario)
                 }
             }
